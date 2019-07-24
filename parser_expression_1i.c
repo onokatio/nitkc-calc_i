@@ -28,6 +28,7 @@ parser_parse_expression(void)
 	int 	s;
 	int 	mp_value = 1; // 1 == plus, -1 == minus
 	int s_n;
+	fprintf(stderr, "PUSHI 0\n");
 
 	while (nextsym.sym != SYM_SEMICOLON && nextsym.sym != SYM_RPAREN){
 		if (nextsym.sym == SYM_PLUS){
@@ -44,18 +45,19 @@ parser_parse_expression(void)
 					printf("* ");
 					s_n = parse_term();
 					s *= s_n;
-					//printf("%d ",s_n);
+					fprintf(stderr, "MUL\n");
 				} else if (nextsym.sym == SYM_SLASH){
 					nextsym = scanner_get_next_sym();
 					printf("/ ");
 					s /= parse_term();
-					//printf("%d ",s_n);
+					fprintf(stderr, "DIV\n");
 				}
 			}
-			printf(")");
-			printf("(? %d) + ",mp_value);
+			printf(") ");
+			printf("+ (? %d) ",mp_value);
 			r += mp_value * s;
 			mp_value = 1;
+			fprintf(stderr, "ADD\n");
 		}
 	}
 
@@ -80,6 +82,7 @@ parse_number(void)
 	if (nextsym.sym == SYM_CONSTANT_INT){
 		r = nextsym.integer;
 		printf("%d ",r);
+		fprintf(stderr, "PUSHI %d\n",r);
 		nextsym = scanner_get_next_sym();
 	}else if (nextsym.sym == SYM_LPAREN){
 		nextsym = scanner_get_next_sym();
