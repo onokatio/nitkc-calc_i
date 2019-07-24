@@ -28,8 +28,7 @@ parser_parse_expression(void)
 	int 	s;
 	int 	mp_value = 1; // 1 == plus, -1 == minus
 	int s_n;
-	fprintf(stderr, "        movq $0, %%rax\n");
-	fprintf(stderr, "        pushq %%rax\n");
+	fprintf(stderr, "        pushq $0\n");
 
 	while (nextsym.sym != SYM_SEMICOLON && nextsym.sym != SYM_RPAREN){
 		if (nextsym.sym == SYM_PLUS){
@@ -46,17 +45,17 @@ parser_parse_expression(void)
 					printf("* ");
 					s_n = parse_term();
 					s *= s_n;
-					fprintf(stderr, "        popq %%rdx\n");
+					fprintf(stderr, "        popq %%rbx\n");
 					fprintf(stderr, "        popq %%rax\n");
-					fprintf(stderr, "        mulq %%rdx\n");
+					fprintf(stderr, "        mulq %%rbx\n");
 					fprintf(stderr, "        pushq %%rax\n");
 				} else if (nextsym.sym == SYM_SLASH){
 					nextsym = scanner_get_next_sym();
 					printf("/ ");
 					s /= parse_term();
-					fprintf(stderr, "        popq %%rdx\n");
+					fprintf(stderr, "        popq %%rbx\n");
 					fprintf(stderr, "        popq %%rax\n");
-					fprintf(stderr, "        divq %%rdx\n");
+					fprintf(stderr, "        divq %%rbx\n");
 					fprintf(stderr, "        pushq %%rax\n");
 				}
 			}
@@ -64,9 +63,9 @@ parser_parse_expression(void)
 			printf("+ (? %d) ",mp_value);
 			r += mp_value * s;
 			mp_value = 1;
-			fprintf(stderr, "        popq %%rdx\n");
+			fprintf(stderr, "        popq %%rbx\n");
 			fprintf(stderr, "        popq %%rax\n");
-			fprintf(stderr, "        addq %%rdx, %%rax\n");
+			fprintf(stderr, "        addq %%rbx, %%rax\n");
 			fprintf(stderr, "        pushq %%rax\n");
 		}
 	}
@@ -92,8 +91,7 @@ parse_number(void)
 	if (nextsym.sym == SYM_CONSTANT_INT){
 		r = nextsym.integer;
 		printf("%d ",r);
-		fprintf(stderr, "        movq $%d, %%rax\n",r);
-		fprintf(stderr, "        pushq %%rax\n",r);
+		fprintf(stderr, "        pushq $%d\n",r);
 		nextsym = scanner_get_next_sym();
 	}else if (nextsym.sym == SYM_LPAREN){
 		nextsym = scanner_get_next_sym();
