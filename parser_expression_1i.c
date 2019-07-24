@@ -28,7 +28,7 @@ parser_parse_expression(void)
 	int 	s;
 	int 	mp_value = 1; // 1 == plus, -1 == minus
 	int s_n;
-	fprintf(stderr, "movl $0 $(rbp)\n");
+	fprintf(stderr, "        movl $0, -4(%rsp)\n");
 
 	while (nextsym.sym != SYM_SEMICOLON && nextsym.sym != SYM_RPAREN){
 		if (nextsym.sym == SYM_PLUS){
@@ -57,7 +57,7 @@ parser_parse_expression(void)
 			printf("+ (? %d) ",mp_value);
 			r += mp_value * s;
 			mp_value = 1;
-			fprintf(stderr, "ADD\n");
+			fprintf(stderr, "        addl %eax, %eax\n");
 		}
 	}
 
@@ -82,7 +82,8 @@ parse_number(void)
 	if (nextsym.sym == SYM_CONSTANT_INT){
 		r = nextsym.integer;
 		printf("%d ",r);
-		fprintf(stderr, "movl $%d (%rbp)\n",r);
+		fprintf(stderr, "        addl $-4, %rsp\n",r);
+		fprintf(stderr, "        movl $%d, -4(%rbp)\n",r);
 		nextsym = scanner_get_next_sym();
 	}else if (nextsym.sym == SYM_LPAREN){
 		nextsym = scanner_get_next_sym();
