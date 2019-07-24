@@ -62,7 +62,6 @@ parser_parse_expression(void)
 			printf(") ");
 			printf("(? %d) + ",mp_value);
 			r += mp_value * s;
-			mp_value = 1;
 			fprintf(stderr, "        movq $%d, %%rbx\n", mp_value);
 			fprintf(stderr, "        popq %%rax\n");
 			fprintf(stderr, "        mulq %%rbx\n");
@@ -72,6 +71,7 @@ parser_parse_expression(void)
 			fprintf(stderr, "        popq %%rax\n");
 			fprintf(stderr, "        addq %%rbx, %%rax\n");
 			fprintf(stderr, "        pushq %%rax\n");
+			mp_value = 1;
 		}
 	}
 
