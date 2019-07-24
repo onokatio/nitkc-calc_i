@@ -60,8 +60,8 @@ parser_parse_expression(void)
 			mp_value = 1;
 			fprintf(stderr, "        popq %%rax\n");
 			fprintf(stderr, "        popq %%rdx\n");
-			fprintf(stderr, "        addq %%rdx, %%eax\n");
-			fprintf(stderr, "        pushq %%rdx\n");
+			fprintf(stderr, "        addq %%rdx, %%rax\n");
+			fprintf(stderr, "        pushq %%rax\n");
 		}
 	}
 

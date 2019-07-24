@@ -15,6 +15,7 @@ int main(void)
 	fprintf(stderr, "        pushq %rbp\n");
 	fprintf(stderr, "        movq %rsp, %rbp\n");
 	printf("答え: %d\n",parser_parse_expression());
+	fprintf(stderr, "        popq %rax\n");
 	fprintf(stderr, "        popq %rbp\n");
 	fprintf(stderr, "        ret\n");
 	return 0;
