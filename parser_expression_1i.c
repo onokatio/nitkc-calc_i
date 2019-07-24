@@ -28,7 +28,7 @@ parser_parse_expression(void)
 	int 	s;
 	int 	mp_value = 1; // 1 == plus, -1 == minus
 	int s_n;
-	fprintf(stderr, "PUSHI 0\n");
+	fprintf(stderr, "movl $0 $(rbp)\n");
 
 	while (nextsym.sym != SYM_SEMICOLON && nextsym.sym != SYM_RPAREN){
 		if (nextsym.sym == SYM_PLUS){
@@ -82,7 +82,7 @@ parse_number(void)
 	if (nextsym.sym == SYM_CONSTANT_INT){
 		r = nextsym.integer;
 		printf("%d ",r);
-		fprintf(stderr, "PUSHI %d\n",r);
+		fprintf(stderr, "movl $%d (%rbp)\n",r);
 		nextsym = scanner_get_next_sym();
 	}else if (nextsym.sym == SYM_LPAREN){
 		nextsym = scanner_get_next_sym();
