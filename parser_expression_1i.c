@@ -27,6 +27,7 @@ parser_parse_expression(void)
 	int		r = 0;
 	int 	s;
 	int 	mp_value = 1; // 1 == plus, -1 == minus
+	int s_n;
 
 	while (nextsym.sym != SYM_SEMICOLON && nextsym.sym != SYM_RPAREN){
 		if (nextsym.sym == SYM_PLUS){
@@ -35,16 +36,24 @@ parser_parse_expression(void)
 			nextsym = scanner_get_next_sym();
 			mp_value *= -1;
 		}else{
+			printf("( ");
 			s = parse_term();
 			while (nextsym.sym == SYM_ASTERISK || nextsym.sym == SYM_SLASH  || nextsym.sym == SYM_CONSTANT_INT ){
 				if (nextsym.sym == SYM_ASTERISK){
 					nextsym = scanner_get_next_sym();
-					s *= parse_term();
+					printf("* ");
+					s_n = parse_term();
+					s *= s_n;
+					//printf("%d ",s_n);
 				} else if (nextsym.sym == SYM_SLASH){
 					nextsym = scanner_get_next_sym();
+					printf("/ ");
 					s /= parse_term();
+					//printf("%d ",s_n);
 				}
 			}
+			printf(")");
+			printf("(? %d) + ",mp_value);
 			r += mp_value * s;
 			mp_value = 1;
 		}
@@ -70,10 +79,13 @@ parse_number(void)
 
 	if (nextsym.sym == SYM_CONSTANT_INT){
 		r = nextsym.integer;
+		printf("%d ",r);
 		nextsym = scanner_get_next_sym();
 	}else if (nextsym.sym == SYM_LPAREN){
 		nextsym = scanner_get_next_sym();
+		printf("[ ");
 		r = parser_parse_expression();
+		printf("] ");
 		nextsym = scanner_get_next_sym();
 	}else{
 		ERROR("<N> が必要です");
