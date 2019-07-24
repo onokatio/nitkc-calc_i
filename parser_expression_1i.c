@@ -46,20 +46,26 @@ parser_parse_expression(void)
 					printf("* ");
 					s_n = parse_term();
 					s *= s_n;
-					fprintf(stderr, "MUL\n");
+					fprintf(stderr, "        popq %%rdx\n");
+					fprintf(stderr, "        popq %%rax\n");
+					fprintf(stderr, "        mulq %%rdx\n");
+					fprintf(stderr, "        pushq %%rax\n");
 				} else if (nextsym.sym == SYM_SLASH){
 					nextsym = scanner_get_next_sym();
 					printf("/ ");
 					s /= parse_term();
-					fprintf(stderr, "DIV\n");
+					fprintf(stderr, "        popq %%rdx\n");
+					fprintf(stderr, "        popq %%rax\n");
+					fprintf(stderr, "        divq %%rdx\n");
+					fprintf(stderr, "        pushq %%rax\n");
 				}
 			}
 			printf(") ");
 			printf("+ (? %d) ",mp_value);
 			r += mp_value * s;
 			mp_value = 1;
-			fprintf(stderr, "        popq %%rax\n");
 			fprintf(stderr, "        popq %%rdx\n");
+			fprintf(stderr, "        popq %%rax\n");
 			fprintf(stderr, "        addq %%rdx, %%rax\n");
 			fprintf(stderr, "        pushq %%rax\n");
 		}
