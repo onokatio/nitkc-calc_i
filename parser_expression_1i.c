@@ -28,7 +28,9 @@ parser_parse_expression(void)
 	int 	s;
 	int 	mp_value = 1; // 1 == plus, -1 == minus
 	int s_n;
-	fprintf(stderr, "        pushq $0\n");
+	fprintf(stderr, "        r2 = 0\n");
+	fprintf(stderr, "        r5 += -1\n");
+	fprintf(stderr, "        *(u32 *)(r5 - 0) = r2\n");
 
 	while (nextsym.sym != SYM_SEMICOLON && nextsym.sym != SYM_RPAREN){
 		if (nextsym.sym == SYM_PLUS){
@@ -45,32 +47,41 @@ parser_parse_expression(void)
 					printf("* ");
 					s_n = parse_term();
 					s *= s_n;
-					fprintf(stderr, "        popq %%rbx\n");
-					fprintf(stderr, "        popq %%rax\n");
-					fprintf(stderr, "        mulq %%rbx\n");
-					fprintf(stderr, "        pushq %%rax\n");
+					fprintf(stderr, "        r2 = *(u32 *)(r5 - 0)\n");
+					fprintf(stderr, "        r5 += 1\n");
+					fprintf(stderr, "        r3 = *(u32 *)(r5 - 0)\n");
+					fprintf(stderr, "        r5 += 1\n");
+					fprintf(stderr, "        r2 *= r3\n");
+					fprintf(stderr, "        r5 += -1\n");
+					fprintf(stderr, "        *(u32 *)(r5 - 0) = r2\n");
 				} else if (nextsym.sym == SYM_SLASH){
 					nextsym = scanner_get_next_sym();
 					printf("/ ");
 					s /= parse_term();
-					fprintf(stderr, "        popq %%rbx\n");
-					fprintf(stderr, "        popq %%rax\n");
-					fprintf(stderr, "        divq %%rbx\n");
-					fprintf(stderr, "        pushq %%rax\n");
+					fprintf(stderr, "        r2 = *(u32 *)(r5 - 0)\n");
+					fprintf(stderr, "        r5 += 1\n");
+					fprintf(stderr, "        r3 = *(u32 *)(r5 - 0)\n");
+					fprintf(stderr, "        r5 += 1\n");
+					fprintf(stderr, "        r2 /= r3\n");
+					fprintf(stderr, "        r5 += -1\n");
+					fprintf(stderr, "        *(u32 *)(r5 - 0) = r2\n");
 				}
 			}
 			printf(") ");
 			printf("(? %d) + ",mp_value);
 			r += mp_value * s;
-			fprintf(stderr, "        movq $%d, %%rbx\n", mp_value);
-			fprintf(stderr, "        popq %%rax\n");
-			fprintf(stderr, "        mulq %%rbx\n");
-			fprintf(stderr, "        pushq %%rax\n");
 
-			fprintf(stderr, "        popq %%rbx\n");
-			fprintf(stderr, "        popq %%rax\n");
-			fprintf(stderr, "        addq %%rbx, %%rax\n");
-			fprintf(stderr, "        pushq %%rax\n");
+			fprintf(stderr, "        r2 = *(u32 *)(r5 - 0)\n");
+			fprintf(stderr, "        r2 *= %d\n", mp_value);
+			fprintf(stderr, "        *(u32 *)(r5 - 0) = r2\n");
+
+			fprintf(stderr, "        r2 = *(u32 *)(r5 - 0)\n");
+			fprintf(stderr, "        r5 += 1\n");
+			fprintf(stderr, "        r3 = *(u32 *)(r5 - 0)\n");
+			fprintf(stderr, "        r5 += 1\n");
+			fprintf(stderr, "        r2 += r3\n");
+			fprintf(stderr, "        r5 += -1\n");
+			fprintf(stderr, "        *(u32 *)(r5 - 0) = r2\n");
 			mp_value = 1;
 		}
 	}
@@ -96,7 +107,9 @@ parse_number(void)
 	if (nextsym.sym == SYM_CONSTANT_INT){
 		r = nextsym.integer;
 		printf("%d ",r);
-		fprintf(stderr, "        pushq $%d\n",r);
+		fprintf(stderr, "        r2 = %d\n",r);
+		fprintf(stderr, "        r5 += -1\n");
+		fprintf(stderr, "        *(u32 *)(r5 - 0) = r2\n");
 		nextsym = scanner_get_next_sym();
 	}else if (nextsym.sym == SYM_LPAREN){
 		nextsym = scanner_get_next_sym();

@@ -1,3 +1,4 @@
 *.o
+*.s
 expression_1
 expression_1i
